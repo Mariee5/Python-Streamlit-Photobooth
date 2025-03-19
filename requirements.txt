@@ -5,4 +5,4 @@ numpy==1.26.4
 deepface==0.0.89
 pygame==2.5.2
 matplotlib==3.8.3
-keras==2.19.0
+keras==3.0.0
