@@ -7,4 +7,4 @@ deepface==0.0.89
 pandas==2.1.1
 plotly==5.19.0
 scikit-image==0.22.0
-tensorflow==2.16.0
+tensorflow-cpu==2.19.0
