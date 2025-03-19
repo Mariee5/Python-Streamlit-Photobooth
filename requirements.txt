@@ -1,0 +1,10 @@
+streamlit
+opencv-python-headless
+Pillow
+numpy
+pygame
+deepface
+pandas
+plotly
+scikit-image
+libgl1
