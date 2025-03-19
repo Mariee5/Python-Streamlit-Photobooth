@@ -5,7 +5,6 @@ from PIL import Image, ImageDraw, ImageFont
 import time
 from io import BytesIO
 import os
-from pygame import mixer
 from deepface import DeepFace
 import pandas as pd
 import plotly.express as px
@@ -80,14 +79,6 @@ def add_frame(image, frame_width=50):
     framed = np.ones((h + 2*frame_width, w + 2*frame_width, 3), dtype=np.uint8) * 255
     framed[frame_width:h+frame_width, frame_width:w+frame_width] = image
     return framed
-
-def play_shutter_sound():
-    try:
-        mixer.init()
-        mixer.music.load("shutter.mp3")
-        mixer.music.play()
-    except:
-        pass
 
 def capture_photos(num_photos=3, delay=3, black_white=False, selected_filter="Original"):
     photos = []
