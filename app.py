@@ -83,10 +83,16 @@ def add_frame(image, frame_width=50):
 def capture_photos(num_photos=3, delay=3, black_white=False, selected_filter="Original"):
     photos = []
     analysis_results = []
-    cap = cv2.VideoCapture(0)
+    
+    # Try multiple camera indices
+    for camera_index in range(3):
+        cap = cv2.VideoCapture(camera_index)
+        if cap.isOpened():
+            break
     
     if not cap.isOpened():
-        st.error("Error: Could not access camera!")
+        st.error("Error: Could not access any camera! Please check your camera connection.")
+        st.info("If you're on Windows, try these steps:\n1. Make sure your camera is enabled\n2. Check camera permissions\n3. Try restarting your computer")
         return None, None
     
     preview_placeholder = st.empty()
@@ -125,7 +131,6 @@ def capture_photos(num_photos=3, delay=3, black_white=False, selected_filter="Or
             
             # Add frame
             frame = add_frame(frame)
-            play_shutter_sound()
             
             photos.append(frame)
             preview_placeholder.image(frame, channels="RGB", caption=f"Photo {i+1} captured!")
@@ -194,63 +199,93 @@ def main():
         initial_sidebar_state="expanded"
     )
     
-    # Set dark theme and custom styles
+    # Set modern dark theme with teal accents
     st.markdown("""
         <style>
-        /* Dark theme */
+        /* Main content background */
         [data-testid="stAppViewContainer"] {
-            background-color: #0e1117;
+            background-color: #1e1e1e;  /* Dark gray */
         }
         
+        /* Sidebar background */
         [data-testid="stSidebar"] {
-            background-color: #262730;
+            background-color: #121212;  /* Darker gray */
         }
         
         /* Text colors */
         h1, h2, h3, p, li, label, div {
-            color: #ffffff !important;
+            color: #ffffff !important;  /* White text */
         }
         
         /* Button styling */
         .stButton>button {
-            background-color: #ff4b4b;
+            background-color: #00bcd4;  /* Teal */
             color: white;
             font-size: 20px;
             padding: 20px 40px;
             border-radius: 10px;
             border: none;
+            transition: background-color 0.3s ease;
+        }
+        
+        .stButton>button:hover {
+            background-color: #0097a7;  /* Darker teal on hover */
         }
         
         /* Sidebar text */
         .sidebar .sidebar-content {
-            color: #ffffff;
+            color: #ffffff;  /* White text for sidebar */
         }
         
         /* Alert boxes */
         .stAlert {
-            background-color: #262730;
-            color: #ffffff;
+            background-color: #121212;  /* Darker gray */
+            color: #ffffff;  /* White text */
+            border-radius: 10px;
+            border: 1px solid #00bcd4;  /* Teal border */
         }
         
         /* Code blocks and other elements */
         code {
-            color: #ff4b4b !important;
+            color: #00bcd4 !important;  /* Teal code text */
         }
         
         /* Links */
         a {
-            color: #ff4b4b !important;
+            color: #00bcd4 !important;  /* Teal links */
         }
         
         /* Dropdown and selectbox */
         .stSelectbox > div > div {
-            background-color: #262730;
-            color: #ffffff;
+            background-color: #121212;  /* Darker gray */
+            color: #ffffff;  /* White text */
+            border: 1px solid #00bcd4;  /* Teal border */
+            border-radius: 5px;
         }
 
         /* Grid styling */
         .stImage {
             margin: 5px;
+            border-radius: 10px;
+            border: 2px solid #00bcd4;  /* Teal border for images */
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #1e1e1e;  /* Dark gray */
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #00bcd4;  /* Teal */
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #0097a7;  /* Darker teal on hover */
         }
         </style>
     """, unsafe_allow_html=True)
