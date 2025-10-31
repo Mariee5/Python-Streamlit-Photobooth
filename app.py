@@ -5,7 +5,14 @@ from PIL import Image, ImageDraw, ImageFont
 import time
 from io import BytesIO
 import os
-from deepface import DeepFace
+try:
+    from deepface import DeepFace
+    DEEPFACE_AVAILABLE = True
+    DEEPFACE_ERROR = None
+except Exception as e:
+    # Don't crash the whole app if DeepFace (or native deps) fail to import.
+    DEEPFACE_AVAILABLE = False
+    DEEPFACE_ERROR = str(e)
 import pandas as pd
 import plotly.express as px
 from datetime import datetime
@@ -48,9 +55,18 @@ def apply_filter(image, filter_name):
     return image
 
 def analyze_face(image):
+    if not DEEPFACE_AVAILABLE:
+        st.error(
+            "DeepFace is not available in the environment. "
+            "This usually means a native dependency (like OpenCV) failed to load. "
+            "Check the Streamlit build logs and ensure required system packages (libgl, libsm6, libxrender, libxext) are installed.\n"
+            f"Import error: {DEEPFACE_ERROR}"
+        )
+        return None
+
     try:
-        result = DeepFace.analyze(image, actions=['emotion'], enforce_detection=False)  
-        if isinstance(result, list):                      #result stored in 'result' which is a dictionary, so ifisinstance basically checks of the function can return a list of results(for multiple faces)
+        result = DeepFace.analyze(image, actions=['emotion'], enforce_detection=False)
+        if isinstance(result, list):
             result = result[0]
         return result
     except Exception as e:
